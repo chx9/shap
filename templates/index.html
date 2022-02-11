@@ -1,0 +1,100 @@
+<html>
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
+<style>
+    div{
+        display: flex;
+        justify-content: center;
+    }
+    img{
+        margin: 0 auto;
+        justify-content: center;
+        height: 300px;
+    }
+</style>
+
+<div>
+    <form>
+        <div>
+            <label>RASH</label>
+            <input name="RASH" value="1">
+        </div>
+        <div>
+            <label>NEUT</label>
+            <input name="NEUT" value="1">
+        </div>
+        <div>
+            <label>HB&nbsp;&nbsp;</label>
+            <input name="HB" value="1">
+        </div>
+        <div>
+            <label>AST&nbsp;</label>
+            <input name="AST" value="1">
+        </div>
+        <div>
+            <label>DD&nbsp;&nbsp;</label>
+            <input name="DD" value="1">
+        </div>
+        <div>
+            <label>ML&nbsp;&nbsp;</label>
+            <input name="ML" value="1">
+        </div>
+        <div>
+            <label>SPL&nbsp;</label>
+            <input name="SPL" value="1">
+        </div>
+        <div>
+            <label>CD4&nbsp;</label>
+            <input name="CD4" value="1">
+        </div>
+        <input type="submit">
+    </form>
+</div>
+<div>
+    <img id="result" > </img>
+</div>
+</html>
+
+<script>
+    formdata = {
+      "RASH": 1.2,
+      "NEUT": 0,
+      "HB": 0,
+      "AST": 0,
+      "DD": 0,
+      "ML": 0,
+      "SPL": 0,
+      "CD4": 0
+    }
+    function get(formdata){
+        (async () => {
+            const rawResponse = await fetch('/explain', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formdata)
+            });
+            const content = await rawResponse.json();
+            console.log(content['dataToTake'])
+            $("#result").attr("src", "data:image/png;base64,"+content['dataToTake'])
+        })();
+    }
+    // get()
+    document.forms[0].onsubmit = async(e) => {
+      e.preventDefault();
+      // const params = new URLSearchParams([...new FormData(e.target).entries()]);
+      // fetch("/path/to/server", {method:"POST", body:params})
+      //   console.log(params)
+      // const response = await new Response(params).text();
+      // console.log(response);
+      params =  $("form").serializeArray();
+      console.log(params)
+        tp = {}
+        for(i=0;i<params.length;i++){
+            tp[params[i].name] = params[i].value
+        }
+      get(tp)
+
+    }
+</script>
